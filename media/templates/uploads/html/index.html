@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Item List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 2rem;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .item {
+      background: #fff;
+      padding: 1rem;
+      margin: 1rem auto;
+      border-left: 5px solid #3498db;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 600px;
+      border-radius: 8px;
+    }
+    .item h2 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+    .item p {
+      margin: 0.5rem 0 0;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Items from API</h1>
+  <div id="items"></div>
+
+  <script>
+    fetch('http://192.168.1.6:8000/api/items/')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network error: ' + response.status);
+        }
+        return response.json();
+      })
+      .then(data => {
+        const container = document.getElementById('items');
+        if (data.length === 0) {
+          container.innerHTML = '<p>No items found.</p>';
+          return;
+        }
+
+        data.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.innerHTML = `
+            <h2>${item.name}</h2>
+            <p>${item.description}</p>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(error => {
+        document.getElementById('items').innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+        console.error('Fetch error:', error);
+      });
+  </script>
+</body>
+</html>
