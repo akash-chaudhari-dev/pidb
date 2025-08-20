@@ -28,6 +28,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+"https://infrared-portal-occasional-fold.trycloudflare.com"
+]
 
 # Application definition
 

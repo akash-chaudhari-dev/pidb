@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hungryy - Menu Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #FF5A5F;
+            --secondary-color: #00A699;
+            --accent-color: #FC642D;
+            --dark-color: #2E2E2E;
+            --light-color: #F7F7F7;
+            --text-color: #484848;
+            --text-light: #767676;
+            --success-color: #00B14F;
+            --warning-color: #F39C12;
+            --danger-color: #E74C3C;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --veg-color: #00B14F;
+            --nonveg-color: #E74C3C;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title-section {
+            flex: 1;
+            text-align: center;
+            min-width: 250px;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .logo-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .smile-curve {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 15px;
+            border: 3px solid var(--primary-color);
+            border-top-color: transparent;
+            border-radius: 0 0 50px 50px;
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 10px;
+            color: var(--dark-color);
+        }
+        
+        .action-button {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+        }
+
+        .action-button:hover {
+            background-color: #00857a;
+            transform: translateY(-2px);
+        }
+
+        .save-button {
+            background-color: var(--success-color);
+        }
+
+        .save-button:hover {
+            background-color: #008c3e;
+        }
+        
+        .back-button {
+            background-color: var(--dark-color);
+        }
+        
+        .back-button:hover {
+            background-color: #484848;
+        }
+        
+        .menu-management-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--text-light);
+        }
+        
+        .category {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .category-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .menu-items-list {
+            list-style: none;
+        }
+        
+        .menu-item-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: background-color 0.3s ease;
+        }
+        
+        .menu-item-card:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-item-card:hover {
+            background-color: #fafafa;
+        }
+        
+        .item-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .item-status-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .item-status-icon.available {
+            background-color: var(--success-color);
+        }
+        
+        .item-status-icon.unavailable {
+            background-color: var(--danger-color);
+        }
+
+        .item-name {
+            font-weight: 500;
+        }
+        
+        .item-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .veg-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        .veg-indicator.veg { 
+            background-color: var(--veg-color);
+        }
+        .veg-indicator.non-veg { 
+            background-color: var(--nonveg-color);
+        }
+
+        .toggle-switch-container {
+            display: inline-block;
+            position: relative;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch-container input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--success-color);
+        }
+        
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--success-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <a href="admin.html" class="action-button back-button">Back to Dashboard</a>
+                <div class="header-title-section">
+                    <h1 class="logo">
+                        h
+                        <span class="logo-text">
+                            <div class="smile-curve"></div>
+                        </span>
+                        ungryy
+                    </h1>
+                    <p class="dashboard-title">Menu Management</p>
+                </div>
+                <button id="saveChangesButton" class="action-button save-button">Save Changes</button>
+            </div>
+        </div>
+
+        <div class="menu-management-section">
+            <h2 class="section-title">Toggle Item Availability</h2>
+            <div id="menu-management-content">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Main Menu Data
+        const menuDataDefault = [
+            { "name": "French Fries Salty", "price": 70.00, "category": "Veg Starters", "isVeg": true, "desc": "Crispy golden fries with a sprinkle of salt", "isAvailable": true },
+            { "name": "Peri Peri Fries", "price": 100.00, "category": "Veg Starters", "isVeg": true, "desc": "Spicy peri peri flavored fries with a kick", "isAvailable": true },
+            { "name": "Plain Maggi", "price": 60.00, "category": "Veg Starters", "isVeg": true, "desc": "Classic maggi noodles with basic seasoning", "isAvailable": true },
+            { "name": "Masala Maggi", "price": 80.00, "category": "Veg Starters", "isVeg": true, "desc": "Maggi with special Indian spices", "isAvailable": true },
+            { "name": "Masala Maggi with Cheese", "price": 100.00, "category": "Veg Starters", "isVeg": true, "desc": "Spicy maggi topped with melted cheese", "isAvailable": true },
+            { "name": "Salty Fries with Cheese Dip", "price": 100.00, "category": "Veg Starters", "isVeg": true, "desc": "Classic fries served with creamy cheese dip", "isAvailable": true },
+            { "name": "Peri Peri Fries with Cheese Dip", "price": 130.00, "category": "Veg Starters", "isVeg": true, "desc": "Spicy peri peri fries with cheese dip", "isAvailable": true },
+            { "name": "Paneer Kurkure (6 pcs)", "price": 90.00, "category": "Paneer Momos", "isVeg": true, "desc": "Crispy fried paneer momos with special spices", "isAvailable": true },
+            { "name": "Paneer Afghani with Cheese (6 pcs)", "price": 160.00, "category": "Paneer Momos", "isVeg": true, "desc": "Rich Afghani style paneer momos with cheese", "isAvailable": true },
+            { "name": "Paneer Cheese Chilly (6 pcs)", "price": 120.00, "category": "Paneer Momos", "isVeg": true, "desc": "Paneer momos tossed in spicy cheese sauce", "isAvailable": true },
+            { "name": "Paneer Pahadi Tandoor (6 pcs)", "price": 90.00, "category": "Paneer Momos", "isVeg": true, "desc": "Paneer momos cooked in traditional tandoor", "isAvailable": true },
+            { "name": "Paneer Fry (6 pcs)", "price": 70.00, "category": "Paneer Momos", "isVeg": true, "desc": "Deep fried paneer momos with mild spices", "isAvailable": true },
+            { "name": "Paneer Steam (6 pcs)", "price": 70.00, "category": "Paneer Momos", "isVeg": true, "desc": "Healthy steamed paneer momos", "isAvailable": true },
+            { "name": "Paneer Tandoor (6 pcs)", "price": 70.00, "category": "Paneer Momos", "isVeg": true, "desc": "Paneer momos cooked in clay oven", "isAvailable": true },
+            { "name": "Cheese Dip", "price": 30.00, "category": "Add-ons", "isVeg": true, "desc": "Creamy cheese dipping sauce", "isAvailable": true },
+            { "name": "Extra Cheese", "price": 30.00, "category": "Add-ons", "isVeg": true, "desc": "Additional cheese topping", "isAvailable": true },
+            { "name": "Peri Peri Masala", "price": 30.00, "category": "Add-ons", "isVeg": true, "desc": "Spicy peri peri seasoning", "isAvailable": true },
+            { "name": "Chicken Kurkure (6 pcs)", "price": 90.00, "category": "Chicken Momos", "isVeg": false, "desc": "Crispy fried chicken momos", "isAvailable": true },
+            { "name": "Chicken Afghani with Cheese (6 pcs)", "price": 160.00, "category": "Chicken Momos", "isVeg": false, "desc": "Rich Afghani style chicken momos with cheese", "isAvailable": true },
+            { "name": "Chicken Cheese Chilly (6 pcs)", "price": 120.00, "category": "Chicken Momos", "isVeg": false, "desc": "Chicken momos tossed in spicy cheese sauce", "isAvailable": true },
+            { "name": "Chicken Pahadi Tandoor (6 pcs)", "price": 90.00, "category": "Chicken Momos", "isVeg": false, "desc": "Chicken momos cooked in traditional tandoor", "isAvailable": true },
+            { "name": "Chicken Fry (6 pcs)", "price": 70.00, "category": "Chicken Momos", "isVeg": false, "desc": "Deep fried chicken momos with mild spices", "isAvailable": true },
+            { "name": "Chicken Steam (6 pcs)", "price": 70.00, "category": "Chicken Momos", "isVeg": false, "desc": "Healthy steamed chicken momos", "isAvailable": true },
+            { "name": "Chicken Tandoor (6 pcs)", "price": 70.00, "category": "Chicken Momos", "isVeg": false, "desc": "Classic tandoori chicken momos", "isAvailable": true },
+            { "name": "Mix Veg Kurkure (6 pcs)", "price": 90.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Crispy fried mixed vegetable momos", "isAvailable": true },
+            { "name": "Mix Veg Afghani with Cheese (6 pcs)", "price": 160.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Rich Afghani style veg momos with cheese", "isAvailable": true },
+            { "name": "Mix Veg Cheese Chilly (6 pcs)", "price": 120.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Veg momos tossed in spicy cheese sauce", "isAvailable": true },
+            { "name": "Mix Veg Pahadi Tandoor (6 pcs)", "price": 90.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Veg momos cooked in traditional tandoor", "isAvailable": true },
+            { "name": "Mix Veg Fry (6 pcs)", "price": 60.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Deep fried mixed vegetable momos", "isAvailable": true },
+            { "name": "Mix Veg Tandoor (6 pcs)", "price": 60.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Veg momos cooked in clay oven", "isAvailable": true },
+            { "name": "Mix Veg Steam (6 pcs)", "price": 60.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Healthy steamed mixed vegetable momos", "isAvailable": true },
+            { "name": "Veg Corn Kurkure (6 pcs)", "price": 90.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Crispy fried corn and vegetable momos", "isAvailable": true },
+            { "name": "Veg Corn Afghani with Cheese (6 pcs)", "price": 160.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Rich Afghani style corn momos with cheese", "isAvailable": true },
+            { "name": "Veg Corn Cheese Chilly (6 pcs)", "price": 120.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Corn momos tossed in spicy cheese sauce", "isAvailable": true },
+            { "name": "Veg Corn Pahadi Tandoor (6 pcs)", "price": 90.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Corn momos cooked in traditional tandoor", "isAvailable": true },
+            { "name": "Veg Corn Fry (6 pcs)", "price": 70.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Deep fried corn and vegetable momos", "isAvailable": true },
+            { "name": "Veg Corn Steam (6 pcs)", "price": 70.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Healthy steamed corn momos", "isAvailable": true },
+            { "name": "Veg Corn Tandoor (6 pcs)", "price": 70.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Corn momos cooked in clay oven", "isAvailable": true },
+            { "name": "Oreo Shake", "price": 120.00, "category": "Milk Shakes", "isVeg": true, "desc": "Creamy milkshake with Oreo cookies", "isAvailable": true },
+            { "name": "Kit Kat Shake", "price": 120.00, "category": "Milk Shakes", "isVeg": true, "desc": "Delicious milkshake with Kit Kat chunks", "isAvailable": true },
+            { "name": "Cold Coffee with Chocolate", "price": 100.00, "category": "Milk Shakes", "isVeg": true, "desc": "Iced coffee blended with chocolate syrup", "isAvailable": true },
+            { "name": "Pineapple Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Refreshing pineapple flavored milkshake", "isAvailable": true },
+            { "name": "Strawberry Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Sweet strawberry milkshake", "isAvailable": true },
+            { "name": "Mango Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Classic mango milkshake", "isAvailable": true },
+            { "name": "Chocolate Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Rich chocolate milkshake", "isAvailable": true },
+            { "name": "Blueberry Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Antioxidant-rich blueberry milkshake", "isAvailable": true },
+            { "name": "Black Currant Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Tangy black currant flavored milkshake", "isAvailable": true },
+            { "name": "Butter Scotch Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Creamy butterscotch flavored milkshake", "isAvailable": true },
+            { "name": "Cold Coffee", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Classic iced coffee", "isAvailable": true },
+            { "name": "Chicken Nuggets (6 pcs)", "price": 80.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Crispy fried chicken nuggets", "isAvailable": true },
+            { "name": "Chicken Zinger Strips (5 pcs)", "price": 120.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Spicy chicken strips with crispy coating", "isAvailable": true },
+            { "name": "Chicken Popcorn (15 pcs)", "price": 110.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Bite-sized crispy chicken popcorn", "isAvailable": true },
+            { "name": "Chicken Cheese Balls (5 pcs)", "price": 100.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Cheesy chicken balls with crispy coating", "isAvailable": true },
+            { "name": "Chicken Reshmi Kabab (2 pcs)", "price": 120.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Soft and juicy chicken kababs", "isAvailable": true },
+            { "name": "Chicken Tandoori Kabab (2 pcs)", "price": 120.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Classic tandoori chicken kababs", "isAvailable": true }
+        ];
+
+        let menuData = JSON.parse(localStorage.getItem('menuData')) || menuDataDefault;
+
+        const menuManagementContent = document.getElementById('menu-management-content');
+        const saveChangesButton = document.getElementById('saveChangesButton');
+
+        function renderMenuForManagement() {
+            const categories = [...new Set(menuData.map(item => item.category))];
+            
+            let html = '';
+            categories.forEach(category => {
+                html += `
+                    <div class="category">
+                        <div class="category-header">
+                            <h2 class="category-title">${category}</h2>
+                        </div>
+                        <ul class="menu-items-list">
+                            ${menuData.filter(item => item.category === category).map(item => renderMenuItem(item)).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+
+            menuManagementContent.innerHTML = html;
+        }
+
+        function renderMenuItem(item) {
+            const isChecked = item.isAvailable ? 'checked' : '';
+            const vegClass = item.isVeg ? 'veg' : 'non-veg';
+            const vegIcon = item.isVeg ? '<i class="fas fa-leaf"></i>' : '<i class="fas fa-drumstick-bite"></i>';
+            const statusClass = item.isAvailable ? 'available' : 'unavailable';
+
+            return `
+                <li class="menu-item-card" data-item-name="${item.name}">
+                    <div class="item-info">
+                        <span class="item-status-icon ${statusClass}"></span>
+                        <span class="item-name">${item.name}</span>
+                    </div>
+                    <div class="item-meta">
+                        <span class="veg-indicator ${vegClass}" title="${item.isVeg ? 'Vegetarian' : 'Non-Vegetarian'}">${vegIcon}</span>
+                        <label class="toggle-switch-container">
+                            <input type="checkbox" ${isChecked}>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </li>
+            `;
+        }
+
+        function saveMenuChanges() {
+            // Read the current state of the toggles
+            const itemCards = document.querySelectorAll('.menu-item-card');
+            itemCards.forEach(card => {
+                const itemName = card.dataset.itemName;
+                const isChecked = card.querySelector('input[type="checkbox"]').checked;
+                
+                // Update the menuData array in memory
+                const itemToUpdate = menuData.find(item => item.name === itemName);
+                if (itemToUpdate) {
+                    itemToUpdate.isAvailable = isChecked;
+                }
+            });
+
+            // Save the updated menuData to localStorage
+            localStorage.setItem('menuData', JSON.stringify(menuData));
+            alert('Menu changes saved successfully!');
+            // Re-render to show the updated status icons immediately
+            renderMenuForManagement();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMenuForManagement();
+            
+            // Add event listener to the save button
+            saveChangesButton.addEventListener('click', saveMenuChanges);
+        });
+    </script>
+</body>
+</html>

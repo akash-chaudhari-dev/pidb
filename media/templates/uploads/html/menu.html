@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hungry - Scan, Order, Eat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #FF5A5F;
+            --secondary-color: #00A699;
+            --accent-color: #FC642D;
+            --dark-color: #2E2E2E;
+            --light-color: #F7F7F7;
+            --text-color: #484848;
+            --text-light: #767676;
+            --success-color: #00B14F;
+            --veg-color: #00B14F;
+            --nonveg-color: #E74C3C;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+        
+        .logo-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .smile-curve {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 15px;
+            border: 3px solid var(--primary-color);
+            border-top-color: transparent;
+            border-radius: 0 0 50px 50px;
+        }
+        
+        /* Home Button Style */
+        .home-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            background: white;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+        
+        .home-button i {
+            margin-right: 5px;
+        }
+        
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: var(--primary-color);
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 90, 95, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Category Styles */
+        .category {
+            margin-bottom: 30px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .category:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .category-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .category.collapsed .category-icon {
+            transform: rotate(-90deg);
+        }
+
+        .menu-items {
+            padding: 0 20px;
+            max-height: 1000px;
+            transition: max-height 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .category.collapsed .menu-items {
+            max-height: 0;
+        }
+
+        /* Menu Item Styles */
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item:hover {
+            transform: translateX(5px);
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .item-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .veg-indicator {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        .veg-indicator.veg { 
+            background-color: var(--veg-color);
+        }
+        .veg-indicator.non-veg { 
+            background-color: var(--nonveg-color);
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            white-space: nowrap;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: 15px;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background-color: var(--secondary-color);
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .quantity-btn:hover {
+            background-color: #00857a;
+            transform: scale(1.1);
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.95);
+        }
+
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .quantity-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        /* Floating buttons at the bottom */
+        .floating-buttons-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 960px;
+            padding: 0 20px;
+            pointer-events: none; /* Allows clicks to pass through empty space */
+        }
+        
+        .checkout-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+            pointer-events: auto;
+        }
+        
+        .checkout-button, .back-button {
+            flex: 1;
+            padding: 18px 25px;
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        #finalCheckoutButton {
+            background-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(255, 90, 95, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-right: 10px;
+        }
+        
+        #backToMenuButton {
+            background-color: var(--secondary-color);
+            box-shadow: 0 5px 15px rgba(0, 166, 153, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+        }
+
+        #finalCheckoutButton:hover {
+            background-color: #ff3d43;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 90, 95, 0.6);
+        }
+        
+        #backToMenuButton:hover {
+            background-color: #00857a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 166, 153, 0.6);
+        }
+
+        .checkout-button:active, .back-button:active {
+            transform: translateY(0);
+        }
+
+        .cart-total {
+            background-color: rgba(0,0,0,0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .checkout-button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Add-ons/Summary view */
+        .summary-container {
+            padding: 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-item-name {
+            font-weight: 500;
+        }
+
+        .summary-item-price {
+            font-weight: 600;
+        }
+        
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+        
+        #addons-container {
+            display: none;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+        
+        /* Floating "View Cart" bubble */
+        .view-cart-bubble {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            padding: 12px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            text-decoration: none;
+            display: none; /* Hidden by default */
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .view-cart-bubble .cart-total {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .view-cart-bubble:hover {
+            background-color: #ff3d43;
+            transform: scale(1.05);
+        }
+
+        /* Floating "Order Status" bubble */
+        .order-status-bubble {
+            position: fixed;
+            bottom: 80px; /* Positioned above the view cart bubble */
+            right: 20px;
+            z-index: 100;
+            padding: 12px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            text-decoration: none;
+            display: none; /* Hidden by default */
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .order-status-bubble:hover {
+            background-color: #00857a;
+            transform: scale(1.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .logo { font-size: 2rem; }
+            .tagline { font-size: 1rem; }
+            .category-title { font-size: 1.3rem; }
+            .menu-item { flex-direction: column; align-items: flex-start; gap: 15px; padding: 15px 0; }
+            .quantity-controls { margin-left: 0; align-self: flex-end; }
+            #finalCheckoutButton { padding: 15px 20px; font-size: 1.1rem; }
+            .view-cart-bubble { bottom: 15px; right: 15px; font-size: 0.9rem; }
+            .order-status-bubble { bottom: 70px; right: 15px; font-size: 0.9rem; }
+            .home-button { top: 15px; left: 15px; padding: 8px 12px; font-size: 0.9rem; }
+        }
+
+        @media (max-width: 480px) {
+            .search-filter { flex-direction: column; }
+            .search-box { min-width: 100%; }
+            .filter-buttons { justify-content: center; }
+            .checkout-container { flex-direction: column-reverse; gap: 10px; }
+            #finalCheckoutButton { margin-right: 0; }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 80px; /* Adjusted to prevent overlap */
+            right: 20px;
+            background-color: var(--success-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification i {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a class="home-button" href="index.html">
+                <i class="fas fa-home"></i> <span>Home</span>
+            </a>
+            <div class="logo">
+                h
+                <span class="logo-text">
+                    <div class="smile-curve"></div>
+                </span>
+                ungryy
+            </div>
+        </div>
+        
+        <div id="main-menu-container">
+            <div class="search-filter">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search for dishes...">
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="veg">Veg</button>
+                    <button class="filter-btn" data-filter="nonveg">Non-Veg</button>
+                </div>
+            </div>
+            <div id="menu-content"></div>
+        </div>
+
+        <div id="addons-container" style="display: none;">
+            <div class="summary-container">
+                <h3>Order Summary</h3>
+                <div id="order-summary-content"></div>
+                <div class="summary-total">
+                    <span>Total:</span>
+                    <span id="order-total-price">₹0.00</span>
+                </div>
+            </div>
+            
+            <div class="category">
+                <div class="category-header">
+                    <h2 class="category-title">Add-ons</h2>
+                </div>
+                <div class="menu-items" id="addons-menu-content">
+                    </div>
+            </div>
+            <div class="checkout-container bottom-buttons">
+                <button class="checkout-button" id="finalCheckoutButton">
+                    <span>Place Order</span>
+                    <span class="cart-total" id="finalCartTotal">0 items</span>
+                </button>
+                <button class="back-button" id="backToMenuButton">
+                    <i class="fas fa-arrow-left"></i> <span>Back to Menu</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <button class="view-cart-bubble" id="viewCartBubble">
+        <span>View Cart</span>
+        <span class="cart-total" id="mainCartTotalBubble">0</span>
+    </button>
+
+    <a class="order-status-bubble" id="orderStatusBubble" href="order.html">
+        <span>Order Status</span>
+        <i class="fas fa-arrow-right"></i>
+    </a>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationMessage">Item added to cart!</span>
+    </div>
+
+    <script>
+        // Main Menu Data
+        const menuDataDefault = [
+            { "name": "French Fries Salty", "price": 70.00, "category": "Veg Starters", "isVeg": true, "desc": "Crispy golden fries with a sprinkle of salt", "isAvailable": true },
+            { "name": "Peri Peri Fries", "price": 100.00, "category": "Veg Starters", "isVeg": true, "desc": "Spicy peri peri flavored fries with a kick", "isAvailable": true },
+            { "name": "Plain Maggi", "price": 60.00, "category": "Veg Starters", "isVeg": true, "desc": "Classic maggi noodles with basic seasoning", "isAvailable": true },
+            { "name": "Masala Maggi", "price": 80.00, "category": "Veg Starters", "isVeg": true, "desc": "Maggi with special Indian spices", "isAvailable": true },
+            { "name": "Masala Maggi with Cheese", "price": 100.00, "category": "Veg Starters", "isVeg": true, "desc": "Spicy maggi topped with melted cheese", "isAvailable": true },
+            { "name": "Salty Fries with Cheese Dip", "price": 100.00, "category": "Veg Starters", "isVeg": true, "desc": "Classic fries served with creamy cheese dip", "isAvailable": true },
+            { "name": "Peri Peri Fries with Cheese Dip", "price": 130.00, "category": "Veg Starters", "isVeg": true, "desc": "Spicy peri peri fries with cheese dip", "isAvailable": true },
+            { "name": "Paneer Kurkure (6 pcs)", "price": 90.00, "category": "Paneer Momos", "isVeg": true, "desc": "Crispy fried paneer momos with special spices", "isAvailable": true },
+            { "name": "Paneer Afghani with Cheese (6 pcs)", "price": 160.00, "category": "Paneer Momos", "isVeg": true, "desc": "Rich Afghani style paneer momos with cheese", "isAvailable": true },
+            { "name": "Paneer Cheese Chilly (6 pcs)", "price": 120.00, "category": "Paneer Momos", "isVeg": true, "desc": "Paneer momos tossed in spicy cheese sauce", "isAvailable": true },
+            { "name": "Paneer Pahadi Tandoor (6 pcs)", "price": 90.00, "category": "Paneer Momos", "isVeg": true, "desc": "Paneer momos cooked in traditional tandoor", "isAvailable": true },
+            { "name": "Paneer Fry (6 pcs)", "price": 70.00, "category": "Paneer Momos", "isVeg": true, "desc": "Deep fried paneer momos with mild spices", "isAvailable": true },
+            { "name": "Paneer Steam (6 pcs)", "price": 70.00, "category": "Paneer Momos", "isVeg": true, "desc": "Healthy steamed paneer momos", "isAvailable": true },
+            { "name": "Paneer Tandoor (6 pcs)", "price": 70.00, "category": "Paneer Momos", "isVeg": true, "desc": "Paneer momos cooked in clay oven", "isAvailable": true },
+            { "name": "Cheese Dip", "price": 30.00, "category": "Add-ons", "isVeg": true, "desc": "Creamy cheese dipping sauce", "isAvailable": true },
+            { "name": "Extra Cheese", "price": 30.00, "category": "Add-ons", "isVeg": true, "desc": "Additional cheese topping", "isAvailable": true },
+            { "name": "Peri Peri Masala", "price": 30.00, "category": "Add-ons", "isVeg": true, "desc": "Spicy peri peri seasoning", "isAvailable": true },
+            { "name": "Chicken Kurkure (6 pcs)", "price": 90.00, "category": "Chicken Momos", "isVeg": false, "desc": "Crispy fried chicken momos", "isAvailable": true },
+            { "name": "Chicken Afghani with Cheese (6 pcs)", "price": 160.00, "category": "Chicken Momos", "isVeg": false, "desc": "Rich Afghani style chicken momos with cheese", "isAvailable": true },
+            { "name": "Chicken Cheese Chilly (6 pcs)", "price": 120.00, "category": "Chicken Momos", "isVeg": false, "desc": "Chicken momos tossed in spicy cheese sauce", "isAvailable": true },
+            { "name": "Chicken Pahadi Tandoor (6 pcs)", "price": 90.00, "category": "Chicken Momos", "isVeg": false, "desc": "Chicken momos cooked in traditional tandoor", "isAvailable": true },
+            { "name": "Chicken Fry (6 pcs)", "price": 70.00, "category": "Chicken Momos", "isVeg": false, "desc": "Deep fried chicken momos with mild spices", "isAvailable": true },
+            { "name": "Chicken Steam (6 pcs)", "price": 70.00, "category": "Chicken Momos", "isVeg": false, "desc": "Healthy steamed chicken momos", "isAvailable": true },
+            { "name": "Chicken Tandoor (6 pcs)", "price": 70.00, "category": "Chicken Momos", "isVeg": false, "desc": "Classic tandoori chicken momos", "isAvailable": true },
+            { "name": "Mix Veg Kurkure (6 pcs)", "price": 90.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Crispy fried mixed vegetable momos", "isAvailable": true },
+            { "name": "Mix Veg Afghani with Cheese (6 pcs)", "price": 160.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Rich Afghani style veg momos with cheese", "isAvailable": true },
+            { "name": "Mix Veg Cheese Chilly (6 pcs)", "price": 120.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Veg momos tossed in spicy cheese sauce", "isAvailable": true },
+            { "name": "Mix Veg Pahadi Tandoor (6 pcs)", "price": 90.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Veg momos cooked in traditional tandoor", "isAvailable": true },
+            { "name": "Mix Veg Fry (6 pcs)", "price": 60.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Deep fried mixed vegetable momos", "isAvailable": true },
+            { "name": "Mix Veg Tandoor (6 pcs)", "price": 60.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Veg momos cooked in clay oven", "isAvailable": true },
+            { "name": "Mix Veg Steam (6 pcs)", "price": 60.00, "category": "Mix Veg Momos", "isVeg": true, "desc": "Healthy steamed mixed vegetable momos", "isAvailable": true },
+            { "name": "Veg Corn Kurkure (6 pcs)", "price": 90.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Crispy fried corn and vegetable momos", "isAvailable": true },
+            { "name": "Veg Corn Afghani with Cheese (6 pcs)", "price": 160.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Rich Afghani style corn momos with cheese", "isAvailable": true },
+            { "name": "Veg Corn Cheese Chilly (6 pcs)", "price": 120.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Corn momos tossed in spicy cheese sauce", "isAvailable": true },
+            { "name": "Veg Corn Pahadi Tandoor (6 pcs)", "price": 90.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Corn momos cooked in traditional tandoor", "isAvailable": true },
+            { "name": "Veg Corn Fry (6 pcs)", "price": 70.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Deep fried corn and vegetable momos", "isAvailable": true },
+            { "name": "Veg Corn Steam (6 pcs)", "price": 70.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Healthy steamed corn momos", "isAvailable": true },
+            { "name": "Veg Corn Tandoor (6 pcs)", "price": 70.00, "category": "Veg Corn Momos", "isVeg": true, "desc": "Corn momos cooked in clay oven", "isAvailable": true },
+            { "name": "Oreo Shake", "price": 120.00, "category": "Milk Shakes", "isVeg": true, "desc": "Creamy milkshake with Oreo cookies", "isAvailable": true },
+            { "name": "Kit Kat Shake", "price": 120.00, "category": "Milk Shakes", "isVeg": true, "desc": "Delicious milkshake with Kit Kat chunks", "isAvailable": true },
+            { "name": "Cold Coffee with Chocolate", "price": 100.00, "category": "Milk Shakes", "isVeg": true, "desc": "Iced coffee blended with chocolate syrup", "isAvailable": true },
+            { "name": "Pineapple Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Refreshing pineapple flavored milkshake", "isAvailable": true },
+            { "name": "Strawberry Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Sweet strawberry milkshake", "isAvailable": true },
+            { "name": "Mango Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Classic mango milkshake", "isAvailable": true },
+            { "name": "Chocolate Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Rich chocolate milkshake", "isAvailable": true },
+            { "name": "Blueberry Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Antioxidant-rich blueberry milkshake", "isAvailable": true },
+            { "name": "Black Currant Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Tangy black currant flavored milkshake", "isAvailable": true },
+            { "name": "Butter Scotch Shake", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Creamy butterscotch flavored milkshake", "isAvailable": true },
+            { "name": "Cold Coffee", "price": 80.00, "category": "Milk Shakes", "isVeg": true, "desc": "Classic iced coffee", "isAvailable": true },
+            { "name": "Chicken Nuggets (6 pcs)", "price": 80.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Crispy fried chicken nuggets", "isAvailable": true },
+            { "name": "Chicken Zinger Strips (5 pcs)", "price": 120.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Spicy chicken strips with crispy coating", "isAvailable": true },
+            { "name": "Chicken Popcorn (15 pcs)", "price": 110.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Bite-sized crispy chicken popcorn", "isAvailable": true },
+            { "name": "Chicken Cheese Balls (5 pcs)", "price": 100.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Cheesy chicken balls with crispy coating", "isAvailable": true },
+            { "name": "Chicken Reshmi Kabab (2 pcs)", "price": 120.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Soft and juicy chicken kababs", "isAvailable": true },
+            { "name": "Chicken Tandoori Kabab (2 pcs)", "price": 120.00, "category": "Non Veg Starters", "isVeg": false, "desc": "Classic tandoori chicken kababs", "isAvailable": true }
+        ];
+
+        // Retrieve menu data from local storage, or use default if none exists
+        const menuData = JSON.parse(localStorage.getItem('menuData')) || menuDataDefault;
+
+        // App state
+        const state = {
+            cart: {},
+            currentFilter: 'all',
+            searchQuery: '',
+        };
+
+        // DOM elements
+        const mainMenuContainer = document.getElementById('main-menu-container');
+        const addonsContainer = document.getElementById('addons-container');
+        const menuContent = document.getElementById('menu-content');
+        const addonsMenuContent = document.getElementById('addons-menu-content');
+        const orderSummaryContent = document.getElementById('order-summary-content');
+        const orderTotalPrice = document.getElementById('order-total-price');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const finalCartTotal = document.getElementById('finalCartTotal');
+        const finalCheckoutButton = document.getElementById('finalCheckoutButton');
+        const backToMenuButton = document.getElementById('backToMenuButton');
+        const notification = document.getElementById('notification');
+        
+        // New elements for the floating bubbles
+        const viewCartBubble = document.getElementById('viewCartBubble');
+        const orderStatusBubble = document.getElementById('orderStatusBubble');
+        const mainCartTotalBubble = document.getElementById('mainCartTotalBubble');
+
+
+        // Initial menu rendering
+        function init() {
+            renderMenu();
+            renderAddons();
+            attachEventListeners();
+            updateCartUI();
+            checkIfRecentOrderExists();
+        }
+        
+        // Checks if there's a recent order and shows the status button
+        function checkIfRecentOrderExists() {
+            const lastOrderString = localStorage.getItem('lastOrder');
+            if (lastOrderString) {
+                const lastOrder = JSON.parse(lastOrderString);
+                // Only show the button if the order is not completed or denied
+                if (lastOrder.status !== 'Completed' && lastOrder.status !== 'Denied') {
+                    orderStatusBubble.style.display = 'flex';
+                } else {
+                    orderStatusBubble.style.display = 'none';
+                }
+            } else {
+                orderStatusBubble.style.display = 'none';
+            }
+        }
+        
+        // Renders the main menu
+        function renderMenu() {
+            // Filter out items that are not available and also the Add-ons category
+            const availableItems = menuData.filter(item => item.isAvailable);
+            const categories = [...new Set(availableItems.map(item => item.category))].filter(cat => cat !== 'Add-ons');
+            const filteredItems = availableItems.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
+                                      (item.desc && item.desc.toLowerCase().includes(state.searchQuery.toLowerCase()));
+                const matchesFilter = state.currentFilter === 'all' || 
+                                    (state.currentFilter === 'veg' && item.isVeg) || 
+                                    (state.currentFilter === 'nonveg' && !item.isVeg);
+                return matchesSearch && matchesFilter;
+            });
+            const itemsByCategory = filteredItems.reduce((acc, item) => {
+                if (!acc[item.category]) acc[item.category] = [];
+                acc[item.category].push(item);
+                return acc;
+            }, {});
+            
+            let html = '';
+            if (Object.keys(itemsByCategory).length === 0) {
+                html = `
+                    <div class="empty-state">
+                        <i class="fas fa-utensils"></i>
+                        <h3>No items found</h3>
+                        <p>Try adjusting your search or filter</p>
+                    </div>
+                `;
+            } else {
+                categories.forEach(category => {
+                    if (itemsByCategory[category]) {
+                        html += `
+                            <div class="category fade-in">
+                                <div class="category-header">
+                                    <h2 class="category-title">${category}</h2>
+                                    <i class="fas fa-chevron-down category-icon"></i>
+                                </div>
+                                <div class="menu-items">
+                                    ${itemsByCategory[category].map(item => renderMenuItem(item)).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+            menuContent.innerHTML = html;
+        }
+        
+        // Renders the add-ons list
+        function renderAddons() {
+            const availableAddons = menuData.filter(item => item.category === 'Add-ons' && item.isAvailable);
+            addonsMenuContent.innerHTML = `
+                <div class="menu-items">
+                    ${availableAddons.map(item => renderMenuItem(item)).join('')}
+                </div>
+            `;
+        }
+        
+        // Renders the order summary
+        function renderOrderSummary() {
+            let html = '';
+            let total = 0;
+            for (const itemName in state.cart) {
+                const item = state.cart[itemName];
+                const itemInMenu = menuData.find(m => m.name === itemName);
+                if (itemInMenu) {
+                    total += item.price * item.quantity;
+                    html += `
+                        <div class="summary-item">
+                            <span class="summary-item-name">${itemName} (x${item.quantity})</span>
+                            <span class="summary-item-price">₹${(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                    `;
+                }
+            }
+            orderSummaryContent.innerHTML = html;
+        }
+
+        // Renders a single menu item HTML
+        function renderMenuItem(item) {
+            const vegClass = item.isVeg ? 'veg' : 'non-veg';
+            const vegIcon = item.isVeg ? '<i class="fas fa-leaf"></i>' : '<i class="fas fa-drumstick-bite"></i>';
+            const quantity = state.cart[item.name]?.quantity || 0;
+            return `
+                <div class="menu-item" data-name="${item.name}">
+                    <div class="item-info">
+                        <h3 class="item-name">${item.name}</h3>
+                        <p class="item-desc">${item.desc}</p>
+                        <div class="item-meta">
+                            <span class="veg-indicator ${vegClass}" title="${item.isVeg ? 'Vegetarian' : 'Non-Vegetarian'}">${vegIcon}</span>
+                        </div>
+                    </div>
+                    <div class="quantity-controls">
+                        <span class="item-price">₹${item.price.toFixed(2)}</span>
+                        <button class="quantity-btn decrease" aria-label="Decrease quantity">-</button>
+                        <input type="number" value="${quantity}" min="0" class="quantity-input" aria-label="Item quantity">
+                        <button class="quantity-btn increase" aria-label="Increase quantity">+</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Updates the cart state and shows a notification
+        function updateCart(itemName, price, quantity, showNotif = true) {
+            if (quantity > 0) {
+                state.cart[itemName] = { price, quantity };
+                if (showNotif) {
+                    showNotification(`${quantity} ${itemName} added to cart`);
+                }
+            } else {
+                delete state.cart[itemName];
+                if (showNotif) {
+                    showNotification(`${itemName} removed from cart`);
+                }
+            }
+            updateCartUI();
+        }
+
+        // Updates the UI of the cart buttons and summary
+        function updateCartUI() {
+            const mainItems = menuData.filter(item => item.category !== 'Add-ons');
+            const mainItemsInCart = mainItems.filter(item => state.cart[item.name]);
+            const addonsInCart = menuData.filter(item => item.category === 'Add-ons' && state.cart[item.name]);
+            
+            const totalMainItems = mainItemsInCart.reduce((sum, item) => sum + state.cart[item.name].quantity, 0);
+            const totalAddons = addonsInCart.reduce((sum, item) => sum + state.cart[item.name].quantity, 0);
+            
+            const totalItems = totalMainItems + totalAddons;
+            const totalAmount = Object.values(state.cart).reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            if (totalMainItems > 0) {
+                viewCartBubble.style.display = 'flex';
+                mainCartTotalBubble.textContent = totalMainItems;
+            } else {
+                viewCartBubble.style.display = 'none';
+            }
+            
+            finalCartTotal.textContent = `${totalItems} items`;
+            orderTotalPrice.textContent = `₹${totalAmount.toFixed(2)}`;
+        }
+
+        // Shows a notification message
+        function showNotification(message) {
+            const notificationMessage = document.getElementById('notificationMessage');
+            notificationMessage.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => { notification.classList.remove('show'); }, 3000);
+        }
+
+        // Attaches all global event listeners
+        function attachEventListeners() {
+            // Search input
+            searchInput.addEventListener('input', (e) => {
+                state.searchQuery = e.target.value;
+                renderMenu();
+            });
+
+            // Filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    state.currentFilter = button.dataset.filter;
+                    renderMenu();
+                });
+            });
+
+            // Category headers (for expand/collapse)
+            document.addEventListener('click', (e) => {
+                if (e.target.closest('.category-header')) {
+                    e.target.closest('.category').classList.toggle('collapsed');
+                }
+            });
+
+            // Main "View Cart" bubble
+            viewCartBubble.addEventListener('click', () => {
+                mainMenuContainer.style.display = 'none';
+                addonsContainer.style.display = 'block';
+                viewCartBubble.style.display = 'none'; // Hide the bubble when in summary view
+                orderStatusBubble.style.display = 'none'; // Hide the status bubble as well
+                renderOrderSummary();
+                updateCartUI();
+            });
+            
+            // "Back to Menu" button
+            backToMenuButton.addEventListener('click', () => {
+                mainMenuContainer.style.display = 'block';
+                addonsContainer.style.display = 'none';
+                checkIfRecentOrderExists(); // Check and show the status bubble if needed
+                updateCartUI();
+            });
+            
+            // New "Check Status" button
+            orderStatusBubble.addEventListener('click', () => {
+                // This is an anchor tag now, so it will redirect automatically
+            });
+            
+            // Event listener for changes to localStorage from other tabs
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'lastOrder') {
+                    checkIfRecentOrderExists();
+                } else if (e.key === 'menuData') {
+                    // Update menu if admin changes it from another tab
+                    window.location.reload();
+                }
+            });
+
+            // "Finalize Order" button
+            finalCheckoutButton.addEventListener('click', () => {
+                const finalOrder = {
+                    orderNumber: Math.floor(Math.random() * 10000),
+                    tableNumber: 5,
+                    items: state.cart,
+                    totalPrice: Object.values(state.cart).reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                    status: 'Pending Confirmation'
+                };
+                
+                localStorage.setItem('lastOrder', JSON.stringify(finalOrder));
+                
+                state.cart = {};
+                updateCartUI();
+                
+                checkIfRecentOrderExists();
+
+                window.location.href = 'order.html';
+            });
+
+            // Event delegation for quantity controls
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('increase') || e.target.classList.contains('decrease')) {
+                    const itemElement = e.target.closest('.menu-item');
+                    const itemName = itemElement.dataset.name;
+                    const menuItem = menuData.find(i => i.name === itemName);
+                    const quantityInput = itemElement.querySelector('.quantity-input');
+                    let quantity = parseInt(quantityInput.value) || 0;
+
+                    if (e.target.classList.contains('increase')) {
+                        quantity++;
+                        quantityInput.value = quantity;
+                        updateCart(itemName, menuItem.price, quantity);
+                    } else if (e.target.classList.contains('decrease') && quantity > 0) {
+                        quantity--;
+                        quantityInput.value = quantity;
+                        updateCart(itemName, menuItem.price, quantity);
+                    }
+                }
+            });
+            
+            // Event listener for manual input changes
+            document.addEventListener('change', (e) => {
+                if (e.target.classList.contains('quantity-input')) {
+                    const itemElement = e.target.closest('.menu-item');
+                    const itemName = itemElement.dataset.name;
+                    const menuItem = menuData.find(i => i.name === itemName);
+                    let quantity = parseInt(e.target.value) || 0;
+                    if (quantity < 0) quantity = 0;
+                    e.target.value = quantity;
+                    updateCart(itemName, menuItem.price, quantity);
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

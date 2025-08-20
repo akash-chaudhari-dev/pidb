@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML File Hoster</title>
+    <style>
+        /* Your existing CSS remains here */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="url"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input[type="text"]:focus,
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            color: #667eea;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .file-upload-label:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .file-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e8f4fd;
+            border-radius: 8px;
+            color: #0066cc;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .upload-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: none; /* Keep this as display none initially */
+        }
+
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 15px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .preview {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e1e5e9;
+            display: none;
+        }
+
+        .preview h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .preview-content {
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">📁</div>
+        <h1>HTML File Hoster</h1>
+        <p class="subtitle">Upload HTML files to your Django REST API</p>
+
+        <form id="uploadForm">
+            <div class="form-group">
+                <label for="htmlFile">HTML File:</label>
+                <div class="file-upload">
+                    <input type="file" id="htmlFile" name="htmlFile" accept=".html" required />
+                    <label for="htmlFile" class="file-upload-label">📄 Choose HTML File</label>
+                </div>
+                <div class="file-info" id="fileInfo"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name of the Site:</label>
+                <input type="text" id="name" name="name" placeholder="Enter name" required />
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description about the site:</label>
+                <input type="text" id="description" name="description" placeholder="Enter description" required />
+            </div>
+
+            <button type="submit" class="upload-btn" id="uploadBtn">🚀 Upload File</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            Uploading...
+        </div>
+
+        <div class="result" id="result"></div>
+
+        <div class="preview" id="preview">
+            <h4>File Preview:</h4>
+            <div class="preview-content" id="previewContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("uploadForm");
+        const fileInput = document.getElementById("htmlFile");
+        const fileInfo = document.getElementById("fileInfo");
+        const uploadBtn = document.getElementById("uploadBtn");
+        const loading = document.getElementById("loading");
+        const result = document.getElementById("result");
+        const preview = document.getElementById("preview");
+        const previewContent = document.getElementById("previewContent");
+
+        // Make sure this URL is correct for your Django REST API endpoint
+        const serverUrl = "https://targeted-sunny-intro-trials.trycloudflare.com/ak/items/";
+
+        fileInput.addEventListener("change", function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                fileInfo.style.display = "block";
+                fileInfo.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.style.display = "block";
+                    previewContent.textContent = e.target.result;
+                };
+                reader.readAsText(file);
+            } else {
+                fileInfo.style.display = "none";
+                preview.style.display = "none";
+            }
+        });
+
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const file = fileInput.files[0];
+            const name = document.getElementById("name").value.trim();
+            const description = document.getElementById("description").value.trim();
+
+            if (!file || !name || !description) {
+                showResult("⚠️ Please fill in all fields and select a file.", "error");
+                return;
+            }
+
+            if (!file.name.endsWith(".html")) {
+                showResult("Only .html files are allowed.", "error");
+                return;
+            }
+
+            loading.style.display = "block";
+            uploadBtn.disabled = true;
+            result.style.display = "none"; // Hide previous results
+
+            try {
+                const formData = new FormData();
+                formData.append("html_file", file);
+                formData.append("name", name);
+                formData.append("description", description);
+
+                const response = await fetch(serverUrl, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const fileUrl = data.html_file;
+                    showResult(
+                        `✅ Upload successful! <br> 
+                        Item ID: <strong>${data.id || "N/A"}</strong> <br> 
+                        🔗 <a href="${fileUrl}" target="_blank">View Uploaded File</a>`, // Improved link text
+                        "success"
+                    );
+                    form.reset(); // Clear the form fields
+                    fileInfo.style.display = "none"; // Hide file info
+                    preview.style.display = "none"; // Hide preview
+                } else {
+                    showResult(`❌ Upload failed: ${data.detail || JSON.stringify(data)}`, "error");
+                }
+            } catch (error) {
+                showResult(`❌ Error: ${error.message}`, "error");
+            } finally {
+                loading.style.display = "none";
+                uploadBtn.disabled = false;
+            }
+        });
+
+        /**
+         * Displays a message in the result area.
+         * @param {string} message The HTML message to display.
+         * @param {string} type The type of message ('success' or 'error').
+         */
+        function showResult(message, type) {
+            result.innerHTML = message; // Use innerHTML to render HTML tags in the message
+            result.className = `result ${type}`; // Apply success or error class
+            result.style.display = "block"; // Make the result div visible
+        }
+
+        // Drag-and-drop handlers
+        const fileUploadLabel = document.querySelector(".file-upload-label");
+
+        fileUploadLabel.addEventListener("dragover", function (e) {
+            e.preventDefault();
+            this.style.background = "#667eea";
+            this.style.color = "white";
+        });
+
+        fileUploadLabel.addEventListener("dragleave", function (e) {
+            e.preventDefault();
+            this.style.background = "#f8f9fa";
+            this.style.color = "#667eea";
+        });
+
+        fileUploadLabel.addEventListener("drop", function (e) {
+            e.preventDefault();
+            this.style.background = "#f8f9fa";
+            this.style.color = "#667eea";
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.name.endsWith(".html")) {
+                    fileInput.files = files;
+                    fileInput.dispatchEvent(new Event("change")); // Trigger change event for file info/preview
+                } else {
+                    showResult("Only .html files are allowed.", "error");
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

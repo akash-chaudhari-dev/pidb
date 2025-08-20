@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hungryyy - Order Status</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #FF5A5F;
+            --secondary-color: #00A699;
+            --accent-color: #FC642D;
+            --dark-color: #2E2E2E;
+            --light-color: #F7F7F7;
+            --text-color: #484848;
+            --text-light: #767676;
+            --success-color: #00B14F;
+            --warning-color: #F39C12;
+            --danger-color: #E74C3C;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            padding: 40px;
+            text-align: center;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .thank-you-message {
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+
+        .order-details-card {
+            background: #fdfdfd;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            text-align: left;
+        }
+        
+        .order-details-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .detail-item span:first-child {
+            font-weight: 500;
+        }
+        
+        .detail-item span:last-child {
+            color: var(--text-light);
+        }
+
+        .order-status-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--light-color);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .status-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            transition: color 0.5s ease;
+        }
+        
+        .status-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            transition: color 0.5s ease;
+        }
+        
+        #order-status.confirmed {
+            color: var(--success-color);
+        }
+        #order-status.denied {
+            color: var(--danger-color);
+        }
+        #order-status.completed {
+            color: var(--secondary-color);
+        }
+        
+        /* New animation for confirmation */
+        .confirmed-icon-animation {
+            animation: zoomIn 1.5s ease-out;
+        }
+        
+        @keyframes zoomIn {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Existing status animations */
+        .status-icon.pending-confirmation {
+            animation: pulse 2s infinite;
+        }
+        .status-icon.confirmed { color: var(--success-color); }
+        .status-icon.denied { color: var(--danger-color); }
+        .status-icon.completed { color: var(--secondary-color); }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        #order-items-summary {
+            padding-top: 10px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-total {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .action-button {
+            padding: 15px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            flex: 1;
+            max-width: 200px;
+        }
+        
+        .update-button {
+            background-color: var(--secondary-color);
+        }
+
+        .cancel-button {
+            background-color: var(--danger-color);
+        }
+        
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .update-button:hover { background-color: #00857a; }
+        .cancel-button:hover { background-color: #C0392B; }
+
+        .back-to-menu-button {
+            margin-top: 30px;
+            padding: 15px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            background-color: var(--secondary-color);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            display: inline-block;
+        }
+        
+        .back-to-menu-button:hover {
+            transform: translateY(-3px);
+            background-color: #00857a;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">Hungryyy</div>
+            <div class="tagline">Scan, Order, Eat</div>
+        </div>
+
+        <h2 class="thank-you-message">Thank You for your Order!</h2>
+        
+        <div class="order-details-card">
+            <div class="order-status-section">
+                <span class="status-text" id="order-status">Pending Confirmation</span>
+                <i class="fas fa-clock status-icon pending-confirmation" id="status-icon"></i>
+            </div>
+            
+            <div class="detail-item">
+                <span>Order No.:</span>
+                <span id="order-number">#8646</span>
+            </div>
+            <div class="detail-item">
+                <span>Table No.:</span>
+                <span id="table-number">5</span>
+            </div>
+        </div>
+
+        <div class="order-details-card">
+            <h3>Order Summary</h3>
+            <div id="order-items-summary">
+                <div class="summary-item">
+                    <span>French Fries Salty (x5)</span>
+                    <span>₹350.00</span>
+                </div>
+            </div>
+            <div class="summary-total">
+                <span>Total Amount:</span>
+                <span id="total-amount">₹350.00</span>
+            </div>
+        </div>
+        
+        <div class="action-buttons" id="action-buttons">
+            <button class="action-button update-button" id="update-button">Update Order</button>
+            <button class="action-button cancel-button" id="cancel-button">Cancel Order</button>
+        </div>
+
+        <a href="menu.html" class="back-to-menu-button" style="display: none;" id="back-to-menu-after-cancel">Back to Menu</a>
+    </div>
+    
+    <audio id="confirmation-sound" src="../sound/sample_confirm_success01_kofi_by_miraclei-360153.mp3" preload="auto"></audio>
+
+    <script>
+        const confirmationSound = document.getElementById('confirmation-sound');
+        const statusIcon = document.getElementById('status-icon');
+        const orderStatus = document.getElementById('order-status');
+        const actionButtonsContainer = document.getElementById('action-buttons');
+        const updateButton = document.getElementById('update-button');
+        const cancelButton = document.getElementById('cancel-button');
+        const backToMenuAfterCancelButton = document.getElementById('back-to-menu-after-cancel');
+
+        let currentOrder = null;
+
+        // Function to update the UI with order details
+        function updateUI(order) {
+            currentOrder = order;
+            if (!order) {
+                // Handle case where order is null
+                document.querySelector('.container').innerHTML = `
+                    <div class="header">
+                        <div class="logo">Hungryyy</div>
+                    </div>
+                    <h2 class="thank-you-message">No order found.</h2>
+                    <a href="menu.html" class="back-to-menu-button">Start a New Order</a>
+                `;
+                return;
+            }
+
+            document.getElementById('order-number').textContent = `#${order.orderNumber}`;
+            document.getElementById('table-number').textContent = order.tableNumber;
+            document.getElementById('total-amount').textContent = `₹${order.totalPrice.toFixed(2)}`;
+            
+            // Update status text and icon
+            orderStatus.textContent = order.status;
+            orderStatus.className = 'status-text ' + order.status.toLowerCase().replace(/ /g, '-');
+            statusIcon.className = 'status-icon';
+            
+            if (order.status === 'Confirmed') {
+                statusIcon.classList.add('fas', 'fa-check-circle', 'confirmed');
+                actionButtonsContainer.style.display = 'flex';
+                updateButton.textContent = 'Request Update'; // Change button text
+                updateButton.style.backgroundColor = 'var(--warning-color)';
+                updateButton.style.display = 'inline-block';
+                cancelButton.style.display = 'none';
+                backToMenuAfterCancelButton.style.display = 'none';
+            } else if (order.status === 'Denied') {
+                statusIcon.classList.add('fas', 'fa-times-circle', 'denied');
+                actionButtonsContainer.style.display = 'none';
+                backToMenuAfterCancelButton.style.display = 'inline-block';
+            } else if (order.status === 'Completed') {
+                statusIcon.classList.add('fas', 'fa-utensils', 'completed');
+                actionButtonsContainer.style.display = 'none';
+                backToMenuAfterCancelButton.style.display = 'inline-block';
+            } else {
+                statusIcon.classList.add('fas', 'fa-clock', 'pending-confirmation');
+                actionButtonsContainer.style.display = 'flex';
+                updateButton.textContent = 'Update Order';
+                updateButton.style.backgroundColor = 'var(--secondary-color)';
+                updateButton.style.display = 'inline-block';
+                cancelButton.style.display = 'inline-block';
+                backToMenuAfterCancelButton.style.display = 'none';
+            }
+
+            const itemsSummaryContainer = document.getElementById('order-items-summary');
+            let itemsHtml = '';
+            
+            for (const itemName in order.items) {
+                const item = order.items[itemName];
+                itemsHtml += `
+                    <div class="summary-item">
+                        <span>${itemName} (x${item.quantity})</span>
+                        <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `;
+            }
+            itemsSummaryContainer.innerHTML = itemsHtml;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const orderDetailsString = localStorage.getItem('lastOrder');
+            
+            if (orderDetailsString) {
+                const order = JSON.parse(orderDetailsString);
+                updateUI(order);
+            } else {
+                document.querySelector('.container').innerHTML = `
+                    <div class="header">
+                        <div class="logo">Hungryyy</div>
+                    </div>
+                    <h2 class="thank-you-message">No order found.</h2>
+                    <a href="menu.html" class="back-to-menu-button">Start a New Order</a>
+                `;
+            }
+        });
+
+        // Add an event listener to listen for changes in localStorage from other tabs/windows
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'lastOrder' && e.newValue) {
+                const updatedOrder = JSON.parse(e.newValue);
+                const oldOrder = JSON.parse(e.oldValue);
+
+                // Check if the status has just changed to "Confirmed"
+                if (updatedOrder.status === 'Confirmed' && oldOrder.status !== 'Confirmed') {
+                    // Play confirmation sound
+                    confirmationSound.play().catch(error => {
+                        console.error('Failed to play audio:', error);
+                    });
+
+                    // Add animation class to the icon
+                    statusIcon.classList.add('confirmed-icon-animation');
+                    
+                    // Remove the animation class after a short duration
+                    setTimeout(() => {
+                        statusIcon.classList.remove('confirmed-icon-animation');
+                    }, 1500); // 1.5 seconds, matches the CSS animation duration
+                }
+
+                updateUI(updatedOrder);
+            }
+        });
+
+        // Event listener for the Update button
+        updateButton.addEventListener('click', () => {
+            if (currentOrder.status === 'Pending Confirmation') {
+                window.location.href = 'menu.html';
+            } else {
+                // If the order is confirmed, create a new "Update Order" to be sent to the admin
+                const updateOrder = {
+                    ...currentOrder,
+                    status: 'Updated Order',
+                    originalOrderNumber: currentOrder.orderNumber,
+                    orderNumber: Math.floor(Math.random() * 10000000),
+                };
+                localStorage.setItem('newOrder', JSON.stringify(updateOrder));
+                alert('Your request to update the order has been sent to the kitchen. Please wait for confirmation.');
+            }
+        });
+
+        // Event listener for the Cancel button
+        cancelButton.addEventListener('click', () => {
+            const confirmCancel = window.confirm("Are you sure you want to cancel this order? This action cannot be undone.");
+            if (confirmCancel) {
+                localStorage.removeItem('lastOrder');
+                // Redirect back to the menu page, which will now show the "start a new order" message
+                window.location.href = 'menu.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hungryy - Reports</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #FF5A5F;
+            --secondary-color: #00A699;
+            --accent-color: #FC642D;
+            --dark-color: #2E2E2E;
+            --light-color: #F7F7F7;
+            --text-color: #484848;
+            --text-light: #767676;
+            --success-color: #00B14F;
+            --warning-color: #F39C12;
+            --danger-color: #E74C3C;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 0 25px rgba(0,0,0,0.1);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+        
+        .logo-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .smile-curve {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 15px;
+            border: 3px solid var(--primary-color);
+            border-top-color: transparent;
+            border-radius: 0 0 50px 50px;
+        }
+
+        .dashboard-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 10px;
+            color: var(--dark-color);
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .report-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--text-light);
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        @media (min-width: 768px) {
+            .report-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .report-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            padding: 25px;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards;
+        }
+        .report-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .report-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 10px;
+        }
+        
+        .report-card.ai-report {
+            background: linear-gradient(135deg, #f0f4f8, #e7eff5);
+            border-left: 5px solid var(--secondary-color);
+            color: var(--dark-color);
+        }
+        .ai-report h3 {
+            border-bottom: 2px solid #dbe2e9;
+        }
+        .ai-report .placeholder-text {
+            font-style: normal;
+            color: var(--text-color);
+            padding: 0;
+        }
+        .ai-report p {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .report-summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .report-summary-item:last-child { border-bottom: none; }
+        
+        .report-summary-item span:first-child {
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .report-summary-item span:first-child i {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+        .report-summary-item span:last-child {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+        }
+        
+        .top-selling-list {
+            list-style: none;
+        }
+
+        .top-selling-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .top-selling-item:last-child { border-bottom: none; }
+
+        .item-name { font-weight: 500; }
+        .item-sales {
+            background-color: var(--light-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .filter-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        .filter-btn:hover {
+            background: var(--light-color);
+            transform: translateY(-2px);
+        }
+        .filter-btn.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+            transform: none;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .date-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-input-container input[type="date"] {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+        }
+
+        .date-input-container button {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+        .date-input-container button:hover {
+            background-color: #e75b22;
+        }
+
+        /* Styles for the graph */
+        .peak-time-chart {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 10px;
+            height: 200px;
+            padding-top: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 5px 5px 0 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            transition: height 0.5s ease;
+            max-width: 100px;
+        }
+
+        .chart-bar:hover {
+            background-color: #e75b22;
+        }
+
+        .bar-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            padding: 5px;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .bar-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-align: center;
+            position: absolute;
+            width: 100%;
+            top: -25px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-light);
+            padding: 40px 20px;
+        }
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .placeholder-text {
+            color: var(--text-light);
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">
+                h
+                <span class="logo-text">
+                    <div class="smile-curve"></div>
+                </span>
+                ungryy
+            </h1>
+            <p class="dashboard-title">Business Reports</p>
+        </div>
+
+        <div class="filter-controls">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-period="daily">Daily</button>
+                <button class="filter-btn" data-period="weekly">Weekly</button>
+                <button class="filter-btn" data-period="monthly">Monthly</button>
+            </div>
+            <div class="date-input-container">
+                <input type="date" id="report-date-picker">
+                <button id="go-button">Go</button>
+            </div>
+        </div>
+
+        <div class="report-header">
+            <h2 style="font-weight: 500; color: var(--text-light);" id="report-period-heading">Report for Today</h2>
+        </div>
+
+        <div class="report-section">
+            <h2 class="section-title">Sales Overview</h2>
+            <div class="report-grid">
+                <div class="report-card" id="sales-summary-card" style="animation-delay: 0.1s;">
+                    <h3>Sales Summary</h3>
+                    <div id="sales-summary-content">
+                        <div class="report-summary-item">
+                            <span><i class="fas fa-list-ol"></i> Total Orders:</span>
+                            <span id="total-orders">0</span>
+                        </div>
+                        <div class="report-summary-item">
+                            <span><i class="fas fa-coins"></i> Total Revenue:</span>
+                            <span id="total-revenue">₹0.00</span>
+                        </div>
+                        <div class="report-summary-item">
+                            <span><i class="fas fa-shopping-basket"></i> Total Items Sold:</span>
+                            <span id="total-items-sold">0</span>
+                        </div>
+                        <div class="report-summary-item">
+                            <span><i class="fas fa-chart-line"></i> Average Order Value:</span>
+                            <span id="average-order-value">₹0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="report-card" id="top-selling-card" style="animation-delay: 0.2s;">
+                    <h3>Top Selling Items</h3>
+                    <ul class="top-selling-list" id="top-selling-content">
+                        </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="report-section">
+            <h2 class="section-title">Customer Behavior</h2>
+            <div class="report-grid">
+                <div class="report-card" id="peak-time-card" style="grid-column: 1 / -1; animation-delay: 0.3s;">
+                    <h3>Order Volume by Time of Day</h3>
+                    <div id="peak-time-graph-container">
+                        <div class="peak-time-chart" id="peak-time-graph">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-section">
+            <h2 class="section-title">AI & Financial Insights</h2>
+            <div class="report-grid">
+                <div class="report-card ai-report" style="animation-delay: 0.4s;">
+                    <h3><i class="fas fa-robot"></i> AI Report & Analytics</h3>
+                    <p class="placeholder-text">This feature will provide predictive analysis, highlight trends, and offer actionable insights. Coming Soon.</p>
+                </div>
+                <div class="report-card" style="animation-delay: 0.5s;">
+                    <h3>Profit & Margin Analysis</h3>
+                    <p class="placeholder-text">This report would show your Cost of Goods Sold (COGS) and profit margins for each item. This requires defining the cost of each menu item.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sampleData = [
+                {
+                    orderNumber: 1001,
+                    tableNumber: 5,
+                    items: {
+                        'Masala Maggi': { quantity: 2, price: 80.00 },
+                        'Oreo Shake': { quantity: 1, price: 120.00 }
+                    },
+                    totalPrice: 280.00,
+                    status: 'Completed',
+                    timestamp: '2025-08-02T10:30:00.000Z' // Morning
+                },
+                {
+                    orderNumber: 1002,
+                    tableNumber: 2,
+                    items: {
+                        'Chicken Tandoori Kabab (2 pcs)': { quantity: 1, price: 120.00 },
+                        'Cold Coffee': { quantity: 2, price: 80.00 }
+                    },
+                    totalPrice: 280.00,
+                    status: 'Completed',
+                    timestamp: '2025-08-02T14:45:00.000Z' // Afternoon
+                },
+                {
+                    orderNumber: 1003,
+                    tableNumber: 8,
+                    items: {
+                        'French Fries Salty': { quantity: 3, price: 70.00 },
+                        'Strawberry Shake': { quantity: 1, price: 80.00 }
+                    },
+                    totalPrice: 290.00,
+                    status: 'Completed',
+                    timestamp: '2025-08-01T20:15:00.000Z' // Evening (yesterday)
+                },
+                {
+                    orderNumber: 1004,
+                    tableNumber: 1,
+                    items: {
+                        'Paneer Afghani with Cheese (6 pcs)': { quantity: 1, price: 160.00 }
+                    },
+                    totalPrice: 160.00,
+                    status: 'Confirmed',
+                    timestamp: '2025-08-02T11:55:00.000Z' // Morning
+                },
+                {
+                    orderNumber: 1005,
+                    tableNumber: 3,
+                    items: {
+                        'Chicken Zinger Strips (5 pcs)': { quantity: 2, price: 120.00 },
+                        'Peri Peri Fries': { quantity: 1, price: 100.00 }
+                    },
+                    totalPrice: 340.00,
+                    status: 'Pending Confirmation',
+                    timestamp: '2025-08-02T15:30:00.000Z' // Afternoon
+                },
+            ];
+
+            const allOrders = JSON.parse(localStorage.getItem('allOrders')) || sampleData;
+            let currentPeriod = 'daily';
+
+            const totalOrdersSpan = document.getElementById('total-orders');
+            const totalRevenueSpan = document.getElementById('total-revenue');
+            const totalItemsSoldSpan = document.getElementById('total-items-sold');
+            const averageOrderValueSpan = document.getElementById('average-order-value');
+            const topSellingContent = document.getElementById('top-selling-content');
+            const peakTimeGraph = document.getElementById('peak-time-graph');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const reportPeriodHeading = document.getElementById('report-period-heading');
+            const reportDatePicker = document.getElementById('report-date-picker');
+            const goButton = document.getElementById('go-button');
+            
+            // Helper function to format dates
+            function formatDate(date) {
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                return date.toLocaleDateString(undefined, options);
+            }
+
+            function getFilteredOrders(period, date) {
+                let now = date ? new Date(date) : new Date();
+                let filteredOrders = [];
+
+                allOrders.forEach(order => {
+                    // Ensure each order has a timestamp for filtering
+                    if (!order.timestamp) {
+                        order.timestamp = now.toISOString();
+                    }
+                    const orderDate = new Date(order.timestamp);
+
+                    if (period === 'daily') {
+                        if (orderDate.toDateString() === now.toDateString()) {
+                            filteredOrders.push(order);
+                        }
+                    } else if (period === 'weekly') {
+                        const oneWeekAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+                        if (orderDate >= oneWeekAgo) {
+                            filteredOrders.push(order);
+                        }
+                    } else if (period === 'monthly') {
+                        const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+                        if (orderDate >= oneMonthAgo) {
+                            filteredOrders.push(order);
+                        }
+                    }
+                });
+
+                return filteredOrders;
+            }
+
+            function generatePeakTimeReport(orders) {
+                const peakTimes = {
+                    'Late Night': 0, // 12 AM - 6 AM
+                    'Morning': 0,    // 6 AM - 12 PM
+                    'Afternoon': 0,  // 12 PM - 6 PM
+                    'Evening': 0,    // 6 PM - 12 AM
+                };
+
+                orders.forEach(order => {
+                    const orderHour = new Date(order.timestamp).getHours();
+                    if (orderHour >= 6 && orderHour < 12) {
+                        peakTimes['Morning']++;
+                    } else if (orderHour >= 12 && orderHour < 18) {
+                        peakTimes['Afternoon']++;
+                    } else if (orderHour >= 18 && orderHour < 24) {
+                        peakTimes['Evening']++;
+                    } else {
+                        peakTimes['Late Night']++;
+                    }
+                });
+
+                const maxOrders = Math.max(...Object.values(peakTimes));
+                peakTimeGraph.innerHTML = '';
+                
+                if (maxOrders === 0) {
+                    peakTimeGraph.innerHTML = `<p class="empty-state">No data for this period.</p>`;
+                } else {
+                    for (const period in peakTimes) {
+                        const count = peakTimes[period];
+                        const height = (count / maxOrders) * 100;
+                        
+                        const bar = document.createElement('div');
+                        bar.classList.add('chart-bar');
+                        bar.style.height = `${height}%`;
+                        bar.innerHTML = `
+                            <span class="bar-value">${count}</span>
+                            <span class="bar-label">${period}</span>
+                        `;
+                        peakTimeGraph.appendChild(bar);
+                    }
+                }
+            }
+
+            function renderReports(period, date = null) {
+                const orders = getFilteredOrders(period, date);
+                
+                // Update report period heading
+                if (period === 'daily') reportPeriodHeading.textContent = `Report for ${formatDate(date || new Date())}`;
+                if (period === 'weekly') reportPeriodHeading.textContent = 'Report for the Last 7 Days';
+                if (period === 'monthly') reportPeriodHeading.textContent = 'Report for the Last 30 Days';
+
+                // Render Sales Summary
+                let totalOrders = orders.length;
+                let totalRevenue = orders.reduce((sum, order) => sum + order.totalPrice, 0);
+                let totalItemsSold = orders.reduce((sum, order) => {
+                    for (const item in order.items) {
+                        sum += order.items[item].quantity;
+                    }
+                    return sum;
+                }, 0);
+                let averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+                
+                totalOrdersSpan.textContent = totalOrders;
+                totalRevenueSpan.textContent = `₹${totalRevenue.toFixed(2)}`;
+                totalItemsSoldSpan.textContent = totalItemsSold;
+                averageOrderValueSpan.textContent = `₹${averageOrderValue.toFixed(2)}`;
+                
+                // Render Top Selling Items
+                const itemCounts = {};
+                orders.forEach(order => {
+                    for (const item in order.items) {
+                        if (itemCounts[item]) {
+                            itemCounts[item] += order.items[item].quantity;
+                        } else {
+                            itemCounts[item] = order.items[item].quantity;
+                        }
+                    }
+                });
+                
+                const sortedItems = Object.entries(itemCounts).sort(([,a], [,b]) => b - a);
+                
+                topSellingContent.innerHTML = '';
+                if (sortedItems.length > 0) {
+                    sortedItems.slice(0, 5).forEach(([name, quantity]) => { // Show top 5
+                        const li = document.createElement('li');
+                        li.classList.add('top-selling-item');
+                        li.innerHTML = `
+                            <span class="item-name">${name}</span>
+                            <span class="item-sales">${quantity} sold</span>
+                        `;
+                        topSellingContent.appendChild(li);
+                    });
+                } else {
+                    topSellingContent.innerHTML = `<li class="empty-state">No sales data for this period.</li>`;
+                }
+
+                // Render Peak Time Graph
+                generatePeakTimeReport(orders);
+
+                // Add animation to cards on update
+                document.querySelectorAll('.report-card').forEach(card => {
+                    card.style.animation = 'none';
+                    card.offsetHeight; // Trigger reflow
+                    card.style.animation = null; 
+                });
+            }
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    currentPeriod = button.dataset.period;
+                    
+                    const selectedDate = reportDatePicker.value ? new Date(reportDatePicker.value) : new Date();
+                    renderReports(currentPeriod, selectedDate);
+                });
+            });
+
+            // Event listeners for the new date picker
+            goButton.addEventListener('click', () => {
+                const selectedDate = reportDatePicker.value ? new Date(reportDatePicker.value) : new Date();
+                
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('.filter-btn[data-period="daily"]').classList.add('active');
+                currentPeriod = 'daily';
+                
+                renderReports(currentPeriod, selectedDate);
+            });
+
+            // Set default date to today
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            reportDatePicker.value = `${yyyy}-${mm}-${dd}`;
+            
+            // Initial render
+            renderReports(currentPeriod, new Date());
+        });
+    </script>
+</body>
+</html>

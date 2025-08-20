@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hungry - Scan, Order, Eat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Color Variables */
+        :root {
+            --primary-color: #FF5A5F;
+            --secondary-color: #00A699;
+            --accent-color: #FC642D;
+            --dark-color: #2E2E2E;
+            --light-color: #F7F7F7;
+            --text-color: #484848;
+            --text-light: #767676;
+            --success-color: #00B14F;
+        }
+
+        /* Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, var(--light-color) 0%, #e8e8e8 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Layout */
+        .page-wrapper {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s forwards 0.5s;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(0.8) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translate(100vw, 100vh) scale(1.2) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
+            60% { transform: translateY(-10px); }
+        }
+
+        /* Floating Food Items */
+        .animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .food-item {
+            width: 70px;
+            height: 70px;
+            position: absolute;
+            opacity: 0;
+            animation: float 15s linear infinite;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+            transition: all 0.3s ease;
+            will-change: transform;
+        }
+
+        .food-item:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));
+            animation-play-state: paused;
+        }
+
+        .food-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Customize animation for each food item */
+        .food-item:nth-child(1) { animation-delay: 0s; top: 10%; left: 5%; animation-duration: 18s; }
+        .food-item:nth-child(2) { animation-delay: 3s; top: 30%; left: 85%; animation-duration: 20s; animation-name: floatReverse; }
+        .food-item:nth-child(3) { animation-delay: 6s; top: 70%; left: 15%; animation-duration: 16s; }
+        .food-item:nth-child(4) { animation-delay: 9s; top: 20%; left: 60%; animation-duration: 22s; animation-name: floatReverse; }
+        .food-item:nth-child(5) { animation-delay: 12s; top: 80%; left: 70%; animation-duration: 19s; }
+        .food-item:nth-child(6) { animation-delay: 2s; top: 60%; left: 80%; animation-duration: 17s; animation-name: floatReverse; }
+        .food-item:nth-child(7) { animation-delay: 7s; top: 40%; left: 20%; animation-duration: 21s; }
+
+        @keyframes floatReverse {
+            0% { transform: translate(0, 0) scale(0.8) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translate(-100vw, 100vh) scale(1.2) rotate(-360deg); opacity: 0; }
+        }
+
+        /* Header Content */
+        .header-content {
+            text-align: center;
+            margin-bottom: 3rem;
+            max-width: 800px;
+        }
+
+        .logo {
+            font-size: 5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.1);
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .logo-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .smile-curve {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 20px;
+            border: 4px solid var(--primary-color);
+            border-top-color: transparent;
+            border-radius: 0 0 50px 50px;
+        }
+
+        .tagline {
+            font-size: 1.8rem;
+            color: var(--dark-color);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .subtagline {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* Features Section */
+        .features-container {
+            width: 100%;
+            margin-bottom: 3rem;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--dark-color);
+            font-weight: 700;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .feature-link {
+            text-decoration: none;
+            color: inherit;
+            perspective: 1000px;
+        }
+
+        .feature {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.4s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            height: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s forwards;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .feature:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature:nth-child(1) { animation-delay: 0.8s; border-top: 5px solid var(--primary-color); }
+        .feature:nth-child(2) { animation-delay: 1s; border-top: 5px solid var(--secondary-color); }
+        .feature:nth-child(3) { animation-delay: 1.2s; border-top: 5px solid var(--accent-color); }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            transition: transform 0.3s ease;
+        }
+
+        .feature:nth-child(2) .feature-icon { color: var(--secondary-color); }
+        .feature:nth-child(3) .feature-icon { color: var(--accent-color); }
+
+        .feature:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .feature-title {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            color: var(--dark-color);
+        }
+
+        .feature-desc {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-coming-soon {
+            display: inline-block;
+            background: var(--light-color);
+            color: var(--secondary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* CTA Button */
+        .cta-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .order-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            background-color: var(--primary-color);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 90, 95, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .order-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 90, 95, 0.6);
+            background-color: #FF3D43;
+        }
+
+        .order-button:active {
+            transform: translateY(1px);
+        }
+
+        .order-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%, -50%);
+            transform-origin: 50% 50%;
+        }
+
+        .order-button:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(0, 0); opacity: 0.5; }
+            100% { transform: scale(20, 20); opacity: 0; }
+        }
+
+        .button-icon {
+            margin-left: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .order-button:hover .button-icon {
+            transform: translateX(5px);
+        }
+
+        .pulse { animation: pulse 2s infinite; }
+
+        /* App Badges */
+        .app-badges {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .app-badge {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .app-badge:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 4rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            padding: 1rem 0;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .social-link {
+            color: var(--text-light);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .logo { font-size: 4rem; }
+            .tagline { font-size: 1.5rem; }
+            .subtagline { font-size: 1.1rem; }
+        }
+
+        @media (max-width: 768px) {
+            .page-wrapper { padding: 1.5rem; }
+            .logo { font-size: 3.5rem; }
+            .tagline { font-size: 1.3rem; }
+            .subtagline { font-size: 1rem; }
+            .features { grid-template-columns: 1fr; }
+            .food-item { width: 50px; height: 50px; }
+            .order-button { padding: 1rem 2rem; font-size: 1.1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .logo { font-size: 2.8rem; }
+            .tagline { font-size: 1.2rem; }
+            .feature { padding: 1.5rem; }
+            .app-badges { flex-direction: column; align-items: center; }
+        }
+
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: white;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-content { text-align: center; }
+
+        .loader-logo {
+            font-size: 3rem; font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            animation: bounce 1.5s infinite;
+        }
+
+        .loader-spinner {
+            width: 50px; height: 50px;
+            border: 5px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-logo">Hungryy</div>
+            <div class="loader-spinner"></div>
+        </div>
+    </div>
+
+    <div class="animation-container">
+        <div class="food-item"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529457.png" alt="Dumplings"></div>
+        <div class="food-item"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529524.png" alt="Noodles"></div>
+        <div class="food-item"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529505.png" alt="Burger"></div>
+        <div class="food-item"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529532.png" alt="Drink"></div>
+        <div class="food-item"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529518.png" alt="Pizza"></div>
+        <div class="food-item"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529498.png" alt="Taco"></div>
+        <div class="food-item"><img src="https://cdn-icons-png.flaticon.com/512/2529/2529472.png" alt="Ice Cream"></div>
+    </div>
+
+    <div class="page-wrapper">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    h
+                    <span class="logo-text">
+                        <div class="smile-curve"></div>
+                    </span>
+                    ungryy
+                </h1>
+                <p class="tagline">Scan, Order, Eat</p>
+                <p class="subtagline">The fastest way to order food at your table. A seamless, hassle-free dining experience with no waiting.</p>
+            </div>
+
+            <div class="features-container">
+                <h2 class="features-title">Why Choose Hungryy?</h2>
+                <div class="features">
+                    <a href="menu.html" class="feature-link">
+                        <div class="feature">
+                            <div class="feature-icon"><i class="fas fa-utensils"></i></div>
+                            <h3 class="feature-title">Browse Menu</h3>
+                            <p class="feature-desc">Explore our delicious offerings with high-quality photos and detailed descriptions of every dish.</p>
+                        </div>
+                    </a>
+                    <a href="#" class="feature-link">
+                        <div class="feature">
+                            <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                            <h3 class="feature-title">Secure Payments</h3>
+                            <p class="feature-desc">Pay directly through our encrypted system with multiple payment options.</p>
+                            <span class="feature-coming-soon">Coming Soon</span>
+                        </div>
+                    </a>
+                    <a href="#" class="feature-link">
+                        <div class="feature">
+                            <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                            <h3 class="feature-title">Lightning Fast</h3>
+                            <p class="feature-desc">Your order goes straight to the kitchen, reducing wait times by up to 40%.</p>
+                            <span class="feature-coming-soon">Coming Soon</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="cta-container">
+                <a href="menu.html" class="order-button pulse" id="orderButton">
+                    Order Now <i class="fas fa-arrow-right button-icon"></i>
+                </a>
+                
+                <div class="app-badges">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="Download on the App Store" class="app-badge">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" class="app-badge">
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                </div>
+                <p>&copy; 2023 Hungryy. All rights reserved.</p>
+                <p><a href="#" style="color: var(--text-light); text-decoration: none;">Privacy Policy</a> | <a href="#" style="color: var(--text-light); text-decoration: none;">Terms of Service</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Loading screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loader').classList.add('hidden');
+            }, 500); // Reduced delay for faster local loading
+        });
+
+        // Order button animation and redirect
+        document.getElementById('orderButton').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Button click effect
+            this.classList.remove('pulse');
+            this.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+                this.classList.add('pulse');
+                window.location.href = this.getAttribute('href');
+            }, 300);
+        });
+
+        // Food item hover effects
+        document.querySelectorAll('.food-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.style.animationPlayState = 'paused';
+            });
+
+            item.addEventListener('mouseleave', () => {
+                item.style.animationPlayState = 'running';
+            });
+        });
+
+        // Feature card hover effects
+        document.querySelectorAll('.feature').forEach(feature => {
+            feature.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+                this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.1)';
+            });
+
+            feature.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.boxShadow = '0 10px 30px rgba(0,0,0,0.05)';
+            });
+        });
+
+        // Add ripple effect to all buttons
+        document.querySelectorAll('.order-button, .feature').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (this.tagName === 'A') {
+                    // Let the link's default behavior handle navigation.
+                    // This function only handles the ripple effect
+                }
+                
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(255,255,255,0.4)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.top = y + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.width = '10px';
+                ripple.style.height = '10px';
+                ripple.style.pointerEvents = 'none';
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    </script>
+</body>
+</html>
